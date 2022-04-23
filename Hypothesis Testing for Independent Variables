@@ -1,0 +1,23 @@
+##create  two-dimensional table  contingency table containing 3 by 3 matrix
+dunc.matrix<- matrix(c(Duncan$income,Duncan$education,Duncan$prestige),3,3,
+              dimnames = list(type=c("Prof","wc","bc"),
+                            c("income","education","prestige")))
+
+## create variable with number of rows and collumn
+dr<- nrow(dunc.matrix)
+dc<- ncol(dunc.matrix)
+
+## create expected counts for dunc.matrix
+dunc.expected<- matrix(rep(colSums(dunc.matrix),
+                           each=dr)*rowSums(dunc.matrix)/sum(dunc.matrix),
+                       nrow = dr,ncol=dc,dimnames = dimnames(dunc.matrix))
+
+## create an array that contain dunc.matrix, dunc.expected and the test statistic for chi-squared
+dunc.array<- array(data=cbind(dunc,dunc.expected,(dunc-dunc.expected)^2/dunc.expected),
+                   dim = c(dr,dc,3),
+                   dimnames = list(dimnames(dunc)[[1]],dimnames(dunc)[[2]],c("Observed_Count","Expected_Count","Test_Statistic")))
+## sum all elements in dunc.array[,,3]
+##X2 follows a chi-squared distribution with (dr-1)*(dc-1) degree of freedom
+X2<- sum(dunc.array[,,3])
+## obtain the p-value for Duncan dataset
+1-pchisq(x2,df=(dc-1)*(dr-1))
